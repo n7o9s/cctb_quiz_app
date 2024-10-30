@@ -1,7 +1,5 @@
 import os
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
 class Config:
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'database.db')}"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Set up the MongoDB URI with credentials
+    MONGO_URI = "mongodb+srv://<db_username>:<db_password>@clusterquizapp.kbqtl.mongodb.net/ClusterQuizApp?retryWrites=true&w=majority"
