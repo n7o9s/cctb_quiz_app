@@ -1,5 +1,7 @@
 # Define the database models here
 from bson import ObjectId
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
 # Question Collection
 class Question:
@@ -38,9 +40,22 @@ class Question:
         )
     
 
+class HistoryQuestion():
+    def __init__(self, user_id: str, questions: List[Dict[str, str]], _id: ObjectId = None):
+        self._id = _id or ObjectId()  # Automatically generate a new ObjectId
+        self.user_id = user_id
+        self.questions = [{"question_id": q["question_id"], "chosenAnswer": q["chosenAnswer"]} for q in questions]
+
+    def get(self):
+        return {
+            "_id": str(self._id),
+            "user_id": str(self.user_id),
+            "questions": [{"question_id": q["question_id"], "chosenAnswer": q["chosenAnswer"]} for q in self.questions]
+        }
+
 class User:
     def __init__(self, first_name: str, last_name: str, number: str,
-                 email: str, password: str,_id: ObjectId = None):
+                 email: str, password: str, _id: ObjectId = None):
         self._id = _id or ObjectId()  # Automatically generate a new ObjectId
         self.first_name = first_name
         self.last_name = last_name
@@ -57,3 +72,17 @@ class User:
             "email": self.email,
             "password": self.password
         }
+
+class Score:
+    def __init__(self, user_id: str, score: List[Dict[datetime, str]], _id: ObjectId = None):
+        self._id = _id or ObjectId()  # Automatically generate a new ObjectId
+        self.user_id = user_id
+        self.score = [{"date": s["date"], "value": s["value"]} for s in score]
+
+    def get(self):
+        return {
+            "_id": str(self._id),
+            "user_id": str(self.user_id),
+            "score": [{"date": s["date"], "value": s["value"]} for s in self.score]
+        }
+

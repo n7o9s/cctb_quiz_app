@@ -2,7 +2,10 @@ import os
 import json
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from models import Question, User
+from models import Question, HistoryQuestion, User, Score
+from datetime import datetime
+
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -285,6 +288,78 @@ sample_users = [
     }
 ]
 
+sample_history_questions = [
+    {
+        "user_id": "6722e893fd70ca83b44d1e49",
+        "questions": [
+            {
+                "question_id": "6722e893fd70ca83b44d1e2a",
+                "chosenAnswer": "answerB"
+            },
+            {
+                "question_id": "6722e893fd70ca83b44d1e2b",
+                "chosenAnswer": "answerC"
+            }
+        ]
+    },
+    {
+        "user_id": "6722e893fd70ca83b44d1e4a",
+        "questions": [
+            {
+                "question_id": "6722e893fd70ca83b44d1e2a",
+                "chosenAnswer": "answerB"
+            },
+            {
+                "question_id": "6722e893fd70ca83b44d1e2b",
+                "chosenAnswer": "answerB"
+            }
+        ]
+    },
+    {
+        "user_id": "6722e893fd70ca83b44d1e4b",
+        "questions": [
+            {
+                "question_id": "6722e893fd70ca83b44d1e2a",
+                "chosenAnswer": "answerD"
+            },
+            {
+                "question_id": "6722e893fd70ca83b44d1e2b",
+                "chosenAnswer": "answerA"
+            }
+        ]
+    }
+]
+
+sample_scores = [
+    {
+        "user_id": "6722dd27dcb9d8b8de37462c",
+        "score": [
+            {
+                "date": datetime.now(),
+                "value": "10/50"
+            }
+        ]
+    },
+    {
+        "user_id": "6722dd27dcb9d8b8de37462d",
+        "score": [
+            {
+                "date": datetime.now(),
+                "value": "48/50"
+            }
+        ]
+    },
+    {
+        "user_id": "6722dd27dcb9d8b8de37462e",
+        "score": [
+            {
+                "date": datetime.now(),
+                "value": "37/50"
+            }
+        ]
+    }
+]
+
 def seed_questions(client):
     """Insert sample questions into the database."""
     db = client[MONGO_DATABASE]  # Use specifiend Database
@@ -302,7 +377,7 @@ def seed_questions(client):
 def seed_users(client):
     """Insert sample users into the database."""
     db = client[MONGO_DATABASE]  # Use specifiend Database
-    user_collection = db.User   # Get the question collection
+    user_collection = db.User   # Get the User collection
 
     # Clear the existing documents in the collection
     user_collection.delete_many({})  # Remove all documents
@@ -312,6 +387,53 @@ def seed_users(client):
     user_collection.insert_many([user.get() for user in users_to_insert])
 
     print(f"Seeded {len(sample_users)} users into User collection.")
+
+def seed_score(client):
+    """Insert sample score into the database."""
+    db = client[MONGO_DATABASE]  # Use specifiend Database
+    score_collection = db.Score   # Get the Score collection
+
+    # Clear the existing documents in the collection
+    score_collection.delete_many({})  # Remove all documents
+
+    # Insert sample history questions in the database using the HistoryQuestion model
+    scores_to_insert = []
+    for data in sample_scores:
+        # Create a new Score instance for each entry
+        score_entry = Score(
+            user_id=data["user_id"],
+            score=data["score"]
+        )
+        scores_to_insert.append(score_entry)
+
+    # Insert the scores into the database
+    score_collection.insert_many([score.get() for score in scores_to_insert])
+
+    print(f"Seeded {len(sample_scores)} scores into Score collection.")
+
+def seed_history(client):
+    """Insert sample history into the database."""
+    db = client[MONGO_DATABASE]  # Use specifiend Database
+    history_collection = db.HistoryQuestion   # Get the HistoryQuestion collection
+
+    # Clear the existing documents in the collection
+    history_collection.delete_many({})  # Remove all documents
+
+    # Insert sample history questions in the database using the HistoryQuestion model
+    histories_to_insert = []
+    for data in sample_history_questions:
+        # Create a new HistoryQuestion instance for each entry
+        history_entry = HistoryQuestion(
+            user_id=data["user_id"],
+            questions=data["questions"]
+        )
+        histories_to_insert.append(history_entry)
+
+    # Insert the histories into the database
+    history_collection.insert_many([history.get() for history in histories_to_insert])
+
+    print(f"Seeded {len(sample_history_questions)} histories into HistoryQuestion collection.")
+
     
 def seed_db():
     """Insert samples into the database."""
@@ -320,6 +442,8 @@ def seed_db():
     # Call all seed helper functions
     seed_questions(client)
     seed_users(client)
+    seed_score(client)
+    seed_history(client)
 
     client.close()  # Close the MongoDB connection
 
