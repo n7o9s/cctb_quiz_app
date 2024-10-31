@@ -4,7 +4,7 @@ from bson import ObjectId
 # Question Collection
 class Question:
     def __init__(self, question: str, answerA: str, answerB: str, 
-                 answerC: str, answerD: str, answerE: str, 
+                 answerC: str, answerD: str, 
                  correctAnswer: str, _id: ObjectId = None):
         self._id = _id or ObjectId()  # Automatically generate an ObjectId
         self.question = question
@@ -12,7 +12,6 @@ class Question:
         self.answerB = answerB
         self.answerC = answerC
         self.answerD = answerD
-        self.answerE = answerE
         self.correctAnswer = correctAnswer
 
     def get(self):
@@ -24,7 +23,6 @@ class Question:
             "answerB": self.answerB,
             "answerC": self.answerC,
             "answerD": self.answerD,
-            "answerE": self.answerE,
             "correctAnswer": self.correctAnswer
         }
 
@@ -36,7 +34,6 @@ class Question:
             answerB=data.get("answerB"),
             answerC=data.get("answerC"),
             answerD=data.get("answerD"),
-            answerE=data.get("answerE"),
             correctAnswer=data.get("correctAnswer")
         )
     

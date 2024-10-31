@@ -12,94 +12,252 @@ MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 
 sample_questions = [
     {
-        "question": "What is a car?",
-        "answerA": "Vehicle.",
-        "answerB": "Chemical.",
-        "answerC": "Treasure.",
-        "answerD": "Food.",
-        "answerE": "Animal.",
+        "question": "What does 'SUV' stand for?",
+        "answerA": "Super Utility Vehicle",
+        "answerB": "Sport Utility Vehicle",
+        "answerC": "Standard Utility Vehicle",
+        "answerD": "Speed Utility Vehicle",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "Which company produces the Corvette?",
+        "answerA": "Ford",
+        "answerB": "Chevrolet",
+        "answerC": "Dodge",
+        "answerD": "Toyota",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does the 'GT' in Ford GT stand for?",
+        "answerA": "Grand Touring",
+        "answerB": "General Transport",
+        "answerC": "Giant Turbo",
+        "answerD": "Grand Test",
         "correctAnswer": "answerA"
     },
     {
-        "question": "Which company produces the Mustang?",
-        "answerA": "Honda.",
-        "answerB": "Chevrolet.",
-        "answerC": "Toyota.",
-        "answerD": "Ford.",
-        "answerE": "Nissan.",
-        "correctAnswer": "answerD"
-    },
-    {
-        "question": "What does SUV stand for?",
-        "answerA": "Small Utility Vehicle.",
-        "answerB": "Super Urban Vehicle.",
-        "answerC": "Sport Utility Vehicle.",
-        "answerD": "Sports Utility Van.",
-        "answerE": "Standard Utility Vehicle.",
+        "question": "What country is the car manufacturer Toyota from?",
+        "answerA": "South Korea",
+        "answerB": "Germany",
+        "answerC": "Japan",
+        "answerD": "China",
         "correctAnswer": "answerC"
     },
     {
-        "question": "What is the main function of a catalytic converter?",
-        "answerA": "Enhance braking.",
-        "answerB": "Increase fuel efficiency.",
-        "answerC": "Improve acceleration.",
-        "answerD": "Reduce emissions.",
-        "answerE": "Increase horsepower.",
-        "correctAnswer": "answerD"
-    },
-    {
-        "question": "Which of these is a luxury car brand?",
-        "answerA": "Toyota.",
-        "answerB": "Mercedes-Benz.",
-        "answerC": "Honda.",
-        "answerD": "Ford.",
-        "answerE": "Chevrolet.",
+        "question": "Which car brand uses a prancing horse as its logo?",
+        "answerA": "Porsche",
+        "answerB": "Ferrari",
+        "answerC": "Lamborghini",
+        "answerD": "Maserati",
         "correctAnswer": "answerB"
     },
     {
-        "question": "What type of engine does a Tesla use?",
-        "answerA": "Hydrogen.",
-        "answerB": "Diesel.",
-        "answerC": "Gasoline.",
-        "answerD": "Hybrid.",
-        "answerE": "Electric.",
-        "correctAnswer": "answerE"
+        "question": "What is the fastest production car in the world (as of 2023)?",
+        "answerA": "Bugatti Chiron Super Sport 300+",
+        "answerB": "Koenigsegg Jesko Absolut",
+        "answerC": "Tesla Model S Plaid",
+        "answerD": "SSC Tuatara",
+        "correctAnswer": "answerD"
     },
     {
-        "question": "What is the purpose of a car's suspension system?",
-        "answerA": "Increase horsepower.",
-        "answerB": "Increase fuel efficiency.",
-        "answerC": "Enhance acceleration.",
-        "answerD": "Reduce weight.",
-        "answerE": "Provide comfort and handling.",
-        "correctAnswer": "answerE"
+        "question": "What was the first car ever made?",
+        "answerA": "Model T",
+        "answerB": "Mercedes-Benz Patent Motorwagen",
+        "answerC": "Rolls-Royce Silver Ghost",
+        "answerD": "Ford Mustang",
+        "correctAnswer": "answerB"
     },
     {
-        "question": "What is a common feature of all-wheel drive vehicles?",
-        "answerA": "Power is sent to only the rear wheels.",
-        "answerB": "Power is sent to only the front wheels.",
-        "answerC": "Power is sent to all four wheels.",
-        "answerD": "It is always a manual transmission.",
-        "answerE": "It has no traction control.",
+        "question": "Which company produces the car model 'Mustang'?",
+        "answerA": "Dodge",
+        "answerB": "Ford",
+        "answerC": "Chevrolet",
+        "answerD": "Nissan",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does ABS stand for in car terminology?",
+        "answerA": "Automated Braking System",
+        "answerB": "Anti-lock Braking System",
+        "answerC": "Auto-Balancing System",
+        "answerD": "All-wheel Braking System",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "Which type of engine is the most common in sports cars?",
+        "answerA": "V6",
+        "answerB": "V8",
+        "answerC": "Inline-4",
+        "answerD": "V12",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "Which country is home to the car manufacturer Volvo?",
+        "answerA": "Norway",
+        "answerB": "Sweden",
+        "answerC": "Finland",
+        "answerD": "Germany",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does the 'T' in Tesla Model S stand for?",
+        "answerA": "Turbo",
+        "answerB": "Technology",
+        "answerC": "Tesla",
+        "answerD": "Traction",
         "correctAnswer": "answerC"
     },
     {
-        "question": "What does ABS stand for in vehicles?",
-        "answerA": "Automatic Braking System.",
-        "answerB": "Anti-lock Braking System.",
-        "answerC": "Advanced Brake System.",
-        "answerD": "Auxiliary Brake System.",
-        "answerE": "All Brake Systems.",
+        "question": "What is the most popular car color worldwide?",
+        "answerA": "White",
+        "answerB": "Black",
+        "answerC": "Red",
+        "answerD": "Blue",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "Which car manufacturer is known for the Beetle?",
+        "answerA": "Fiat",
+        "answerB": "Volkswagen",
+        "answerC": "Honda",
+        "answerD": "BMW",
         "correctAnswer": "answerB"
     },
     {
-        "question": "Which fuel type is most commonly used in cars?",
-        "answerA": "Diesel.",
-        "answerB": "Electric.",
-        "answerC": "Ethanol.",
-        "answerD": "Gasoline.",
-        "answerE": "Natural Gas.",
+        "question": "What year did the Ford Mustang debut?",
+        "answerA": "1959",
+        "answerB": "1964",
+        "answerC": "1970",
+        "answerD": "1980",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does 'EV' stand for in the automotive industry?",
+        "answerA": "Electric Vehicle",
+        "answerB": "Engine Vehicle",
+        "answerC": "Eco Vehicle",
+        "answerD": "Enhanced Vehicle",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "Which car company produces the 911 model?",
+        "answerA": "Audi",
+        "answerB": "Porsche",
+        "answerC": "BMW",
+        "answerD": "Mercedes-Benz",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What is the luxury brand of Toyota?",
+        "answerA": "Lexus",
+        "answerB": "Infiniti",
+        "answerC": "Acura",
+        "answerD": "Cadillac",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "Which type of drivetrain is designed for all four wheels to receive power simultaneously?",
+        "answerA": "FWD",
+        "answerB": "RWD",
+        "answerC": "AWD",
+        "answerD": "2WD",
+        "correctAnswer": "answerC"
+    },
+    {
+        "question": "What is the purpose of a turbocharger in a car?",
+        "answerA": "Increase fuel efficiency",
+        "answerB": "Increase engine power",
+        "answerC": "Reduce emissions",
+        "answerD": "Improve handling",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "Which car brand’s logo consists of four interlocked rings?",
+        "answerA": "BMW",
+        "answerB": "Audi",
+        "answerC": "Infiniti",
+        "answerD": "Subaru",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does the term 'MPG' stand for in car fuel efficiency?",
+        "answerA": "Miles per Gallon",
+        "answerB": "Motor Power Gauge",
+        "answerC": "Maximum Performance Grade",
+        "answerD": "Mileage per Gear",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "What was the first mass-produced electric car?",
+        "answerA": "Tesla Roadster",
+        "answerB": "Nissan Leaf",
+        "answerC": "Chevrolet Volt",
+        "answerD": "Toyota Prius",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What is the car model 'Civic' made by?",
+        "answerA": "Honda",
+        "answerB": "Toyota",
+        "answerC": "Ford",
+        "answerD": "Hyundai",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "What is the legal blood alcohol limit for driving in most countries?",
+        "answerA": "0.05%",
+        "answerB": "0.08%",
+        "answerC": "0.10%",
+        "answerD": "0.12%",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "What does the 'M' in BMW M series stand for?",
+        "answerA": "Manual",
+        "answerB": "Motorsport",
+        "answerC": "Mechanic",
+        "answerD": "Model",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "Which country is the brand Hyundai from?",
+        "answerA": "Japan",
+        "answerB": "China",
+        "answerC": "South Korea",
+        "answerD": "Germany",
+        "correctAnswer": "answerC"
+    },
+    {
+        "question": "What type of fuel do most Formula 1 cars use?",
+        "answerA": "Diesel",
+        "answerB": "Unleaded gasoline",
+        "answerC": "Ethanol",
+        "answerD": "Specialized fuel blends",
         "correctAnswer": "answerD"
+    },
+    {
+        "question": "Which car is considered the first supercar?",
+        "answerA": "Lamborghini Miura",
+        "answerB": "Ferrari 250 GTO",
+        "answerC": "Bugatti Veyron",
+        "answerD": "Porsche 959",
+        "correctAnswer": "answerA"
+    },
+    {
+        "question": "What is a hybrid car?",
+        "answerA": "A car with both a gas and diesel engine",
+        "answerB": "A car that runs on gasoline and electricity",
+        "answerC": "A car with interchangeable engines",
+        "answerD": "A car that uses two types of fuel",
+        "correctAnswer": "answerB"
+    },
+    {
+        "question": "In which country did the 'Autobahn,' a highway with no speed limit, originate?",
+        "answerA": "France",
+        "answerB": "Italy",
+        "answerC": "Germany",
+        "answerD": "Switzerland",
+        "correctAnswer": "answerC"
     }
 ]
 
