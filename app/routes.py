@@ -22,9 +22,20 @@ def get_all_questions():
     return jsonify(questions_list), 200
 
 # User APIs
+
+def validate_user_data(data):
+    # Example validation logic
+    if 'first_name' not in data or 'last_name' not in data:
+        return False, {"error": "First and last name are required"}
+    return True, None
+
 @main.route('/user', methods=['POST'])
 def add_user():
     data = request.json
+    is_valid, error = validate_user_data(data)
+    if not is_valid:
+        return jsonify(error), 400
+
     new_user = {
         "first_name": data.get("first_name"),
         "last_name": data.get("last_name"),
@@ -46,10 +57,13 @@ def login_user():
 
 @main.route('/user/<string:id>', methods=['GET'])
 def get_user(id):
-    user = mongo.db.User.find_one({"_id": ObjectId(str(id))})
-    if user:
-        return jsonify(object_id_to_str(user)), 200
-    return jsonify({"message": "User not found"}), 404
+    try:
+        user = mongo.db.User.find_one({"_id": ObjectId(id)})
+        if user:
+            return jsonify(object_id_to_str(user)), 200
+        return jsonify({"message": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @main.route('/user/<string:id>', methods=['PUT'])
 def update_user(id):
@@ -61,14 +75,17 @@ def update_user(id):
         "email": data.get("email"),
         "password": data.get("password")
     }
-    mongo.db.User.update_one({"_id": ObjectId(id)}, {"$set": update_fields})
+    result = mongo.db.User.update_one({"_id": ObjectId(id)}, {"$set": update_fields})
+    if result.matched_count == 0:
+        return jsonify({"message": "User not found"}), 404
     return jsonify({"message": "User updated"}), 200
 
 @main.route('/user/<string:id>', methods=['DELETE'])
 def delete_user(id):
-    mongo.db.User.delete_one({"_id": ObjectId(id)})
-    return jsonify({"message": "User deleted"}), 204
-
+    result = mongo.db.User.delete_one({"_id": ObjectId(id)})
+    if result.deleted_count == 0:
+        return jsonify({"message": "User not found"}), 404
+    return jsonify({"message": "User deleted"}), 200
 # Question APIs
 @main.route('/question', methods=['POST'])
 def add_question():
