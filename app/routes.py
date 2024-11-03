@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-# Working APIs
+# 'GET All' APIs
 @main.route('/users', methods=['GET'])
 def get_all_users():
     users = mongo.db.User.find()  # Get all users from the User collection
@@ -72,35 +72,18 @@ def delete_user(id):
 def add_question():
     data = request.json
     new_question = {"question_text": data.get("question_text")}
-    result = mongo.db.questions.insert_one(new_question)
+    result = mongo.db.Question.insert_one(new_question)
     new_question["_id"] = str(result.inserted_id)
     return jsonify(new_question), 201
 
 @main.route('/question/<string:id>', methods=['GET'])
 def get_question(id):
-    question = mongo.db.questions.find_one({"_id": ObjectId(id)})
+    question = mongo.db.Question.find_one({"_id": ObjectId(id)})
     if question:
         return jsonify(object_id_to_str(question)), 200
     return jsonify({"message": "Question not found"}), 404
 
 @main.route('/questions', methods=['GET'])
 def get_questions():
-    questions = mongo.db.questions.find()
+    questions = mongo.db.Question.find()
     return jsonify([object_id_to_str(q) for q in questions]), 200
-
-# Alternatives APIs
-@main.route('/question/<string:question_id>/alternative', methods=['POST'])
-def add_alternative(question_id):
-    data = request.json
-    new_alternative = {
-        "question_id": question_id,
-        "alternative_text": data.get("alternative_text")
-    }
-    result = mongo.db.alternatives.insert_one(new_alternative)
-    new_alternative["_id"] = str(result.inserted_id)
-    return jsonify(new_alternative), 201
-
-@main.route('/question/<string:question_id>/alternatives', methods=['GET'])
-def get_alternatives(question_id):
-    alternatives = mongo.db.alternatives.find({"question_id": question_id})
-    return jsonify([object_id_to_str(a) for a in alternatives]), 200
