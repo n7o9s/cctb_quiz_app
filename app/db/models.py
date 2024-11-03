@@ -19,7 +19,7 @@ class Question:
     def get(self):
         """Return the Question object as a dictionary for database storage."""
         return {
-            "_id": str(self._id),  # Convert ObjectId to string for JSON serialization
+            "_id": self._id,  # Convert ObjectId to string for JSON serialization
             "question": self.question,
             "answerA": self.answerA,
             "answerB": self.answerB,
@@ -41,15 +41,15 @@ class Question:
     
 
 class HistoryQuestion():
-    def __init__(self, user_id: str, questions: List[Dict[str, str]], _id: ObjectId = None):
+    def __init__(self, user_id: ObjectId, questions: List[Dict[str, str]], _id: ObjectId = None):
         self._id = _id or ObjectId()  # Automatically generate a new ObjectId
         self.user_id = user_id
         self.questions = [{"question_id": q["question_id"], "chosenAnswer": q["chosenAnswer"]} for q in questions]
 
     def get(self):
         return {
-            "_id": str(self._id),
-            "user_id": str(self.user_id),
+            "_id": self._id,
+            "user_id": self.user_id,
             "questions": [{"question_id": q["question_id"], "chosenAnswer": q["chosenAnswer"]} for q in self.questions]
         }
 
@@ -65,7 +65,7 @@ class User:
 
     def get(self):
         return {
-            "_id": str(self._id),
+            "_id": self._id,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "number": self.number,
@@ -74,15 +74,15 @@ class User:
         }
 
 class Score:
-    def __init__(self, user_id: str, score: List[Dict[datetime, str]], _id: ObjectId = None):
+    def __init__(self, user_id: ObjectId, score: List[Dict[datetime, str]], _id: ObjectId = None):
         self._id = _id or ObjectId()  # Automatically generate a new ObjectId
         self.user_id = user_id
         self.score = [{"date": s["date"], "value": s["value"]} for s in score]
 
     def get(self):
         return {
-            "_id": str(self._id),
-            "user_id": str(self.user_id),
+            "_id": self._id,
+            "user_id": self.user_id,
             "score": [{"date": s["date"], "value": s["value"]} for s in self.score]
         }
 

@@ -1,5 +1,6 @@
 import os
 import json
+from bson import ObjectId
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from models import Question, HistoryQuestion, User, Score
@@ -290,7 +291,6 @@ sample_users = [
 
 sample_history_questions = [
     {
-        "user_id": "6722e893fd70ca83b44d1e49",
         "questions": [
             {
                 "question_id": "6722e893fd70ca83b44d1e2a",
@@ -303,7 +303,6 @@ sample_history_questions = [
         ]
     },
     {
-        "user_id": "6722e893fd70ca83b44d1e4a",
         "questions": [
             {
                 "question_id": "6722e893fd70ca83b44d1e2a",
@@ -316,7 +315,6 @@ sample_history_questions = [
         ]
     },
     {
-        "user_id": "6722e893fd70ca83b44d1e4b",
         "questions": [
             {
                 "question_id": "6722e893fd70ca83b44d1e2a",
@@ -332,7 +330,6 @@ sample_history_questions = [
 
 sample_scores = [
     {
-        "user_id": "6722dd27dcb9d8b8de37462c",
         "score": [
             {
                 "date": datetime.now(),
@@ -341,7 +338,6 @@ sample_scores = [
         ]
     },
     {
-        "user_id": "6722dd27dcb9d8b8de37462d",
         "score": [
             {
                 "date": datetime.now(),
@@ -350,7 +346,6 @@ sample_scores = [
         ]
     },
     {
-        "user_id": "6722dd27dcb9d8b8de37462e",
         "score": [
             {
                 "date": datetime.now(),
@@ -370,9 +365,10 @@ def seed_questions(client):
 
     # Insert sample questions in the database using the Question model
     questions_to_insert = [Question(**data) for data in sample_questions]
-    question_collection.insert_many([question.get() for question in questions_to_insert])
+    inserted_ids = question_collection.insert_many([question.get() for question in questions_to_insert]).inserted_ids
 
     print(f"Seeded {len(sample_questions)} questions into Question collection.")
+    return inserted_ids # Return list of question ObjectIds
 
 def seed_users(client):
     """Insert sample users into the database."""
@@ -384,11 +380,12 @@ def seed_users(client):
 
     # Insert sample questions in the database using the User model
     users_to_insert = [User(**data) for data in sample_users]
-    user_collection.insert_many([user.get() for user in users_to_insert])
+    inserted_ids = user_collection.insert_many([user.get() for user in users_to_insert]).inserted_ids
 
     print(f"Seeded {len(sample_users)} users into User collection.")
+    return inserted_ids # Return list of user ObjectIds
 
-def seed_score(client):
+def seed_score(client, user_ids):
     """Insert sample score into the database."""
     db = client[MONGO_DATABASE]  # Use specifiend Database
     score_collection = db.Score   # Get the Score collection
@@ -398,20 +395,24 @@ def seed_score(client):
 
     # Insert sample history questions in the database using the HistoryQuestion model
     scores_to_insert = []
-    for data in sample_scores:
+    """for data in sample_scores:
         # Create a new Score instance for each entry
         score_entry = Score(
-            user_id=data["user_id"],
+            user_id=ObjectId(data["user_id"]),
             score=data["score"]
         )
-        scores_to_insert.append(score_entry)
+        scores_to_insert.append(score_entry)"""
+    
+    scores_to_insert = [
+        Score(user_id=user_ids[i], score=sample_scores[i]["score"]) for i in range(len(sample_scores))
+    ]
 
     # Insert the scores into the database
     score_collection.insert_many([score.get() for score in scores_to_insert])
 
     print(f"Seeded {len(sample_scores)} scores into Score collection.")
 
-def seed_history(client):
+def seed_history(client, user_ids, question_ids):
     """Insert sample history into the database."""
     db = client[MONGO_DATABASE]  # Use specifiend Database
     history_collection = db.HistoryQuestion   # Get the HistoryQuestion collection
@@ -421,13 +422,22 @@ def seed_history(client):
 
     # Insert sample history questions in the database using the HistoryQuestion model
     histories_to_insert = []
-    for data in sample_history_questions:
+    """for data in sample_history_questions:
         # Create a new HistoryQuestion instance for each entry
         history_entry = HistoryQuestion(
-            user_id=data["user_id"],
+            user_id=ObjectId(data["user_id"]),
             questions=data["questions"]
         )
-        histories_to_insert.append(history_entry)
+        histories_to_insert.append(history_entry)"""
+    
+    for i, user_id in enumerate(user_ids):
+        questions = [
+            {
+                "question_id": question_ids[j % len(question_ids)],  # Cycle through question IDs
+                "chosenAnswer": sample_history_questions[i]["questions"][j]["chosenAnswer"]
+            } for j in range(len(sample_history_questions[i]["questions"]))
+        ]
+        histories_to_insert.append(HistoryQuestion(user_id=user_id, questions=questions))
 
     # Insert the histories into the database
     history_collection.insert_many([history.get() for history in histories_to_insert])
@@ -439,11 +449,13 @@ def seed_db():
     """Insert samples into the database."""
     client = MongoClient(MONGO_URI)
 
-    # Call all seed helper functions
-    seed_questions(client)
-    seed_users(client)
-    seed_score(client)
-    seed_history(client)
+    # Seed users and questions, storing their ObjectIds
+    user_ids = seed_users(client)
+    question_ids = seed_questions(client)
+
+    # Seed scores and history questions with actual user and question ObjectIds
+    seed_score(client, user_ids)
+    seed_history(client, user_ids, question_ids)
 
     client.close()  # Close the MongoDB connection
 
