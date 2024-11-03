@@ -28,8 +28,9 @@ def add_user():
     new_user = {
         "first_name": data.get("first_name"),
         "last_name": data.get("last_name"),
+        "number": data.get("number"),
         "email": data.get("email"),
-        "contact_number": data.get("contact_num")
+        "password": data.get("password")
     }
     result = mongo.db.User.insert_one(new_user)
     new_user["_id"] = str(result.inserted_id)
@@ -56,8 +57,9 @@ def update_user(id):
     update_fields = {
         "first_name": data.get("first_name"),
         "last_name": data.get("last_name"),
+        "number": data.get("number"),
         "email": data.get("email"),
-        "contact_number": data.get("contact_num")
+        "password": data.get("password")
     }
     mongo.db.User.update_one({"_id": ObjectId(id)}, {"$set": update_fields})
     return jsonify({"message": "User updated"}), 200
@@ -71,7 +73,14 @@ def delete_user(id):
 @main.route('/question', methods=['POST'])
 def add_question():
     data = request.json
-    new_question = {"question_text": data.get("question_text")}
+    new_question = {
+        "question": data.get("question"),
+        "answerA": data.get("answerA"),
+        "answerB": data.get("answerB"),
+        "answerC": data.get("answerC"),
+        "answerD": data.get("answerD"),
+        "correctAnswer": data.get("correctAnswer")
+    }
     result = mongo.db.Question.insert_one(new_question)
     new_question["_id"] = str(result.inserted_id)
     return jsonify(new_question), 201
@@ -83,7 +92,31 @@ def get_question(id):
         return jsonify(object_id_to_str(question)), 200
     return jsonify({"message": "Question not found"}), 404
 
-@main.route('/questions', methods=['GET'])
-def get_questions():
-    questions = mongo.db.Question.find()
-    return jsonify([object_id_to_str(q) for q in questions]), 200
+@main.route('/question/<string:id>', methods=['PUT'])
+def update_question(id):
+    data = request.json
+    update_fields = {
+        "question": data.get("question"),
+        "answerA": data.get("answerA"),
+        "answerB": data.get("answerB"),
+        "answerC": data.get("answerC"),
+        "answerD": data.get("answerD"),
+        "correctAnswer": data.get("correctAnswer")
+    }
+    result = mongo.db.Question.update_one({"_id": ObjectId(id)}, {"$set": update_fields})
+
+    if result.matched_count == 0:
+        # If no document was matched, return a 404 error
+        return jsonify({"error": "Question not found"}), 404
+    
+    return jsonify({"message": "Question updated"}), 200
+
+@main.route('/question/<string:id>', methods=['DELETE'])
+def delete_question(id):
+    result = mongo.db.Question.delete_one({"_id": ObjectId(id)})
+
+    if result.deleted_count == 0:
+        # If no document was deleted, return a 404 error
+        return jsonify({"error": "Question not found"}), 404
+    
+    return jsonify({"message": "Question deleted"}), 200
