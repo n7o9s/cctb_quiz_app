@@ -1,9 +1,13 @@
 from flask import Flask
+from flask_cors import CORS
 from app.config import DevelopmentConfig
 from .db.mongo import init_db, disconnect
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
+
+    # Allow CORS for all domains on all routes.
+    cors = CORS(app)
 
     # Load configuration from the provided class
     app.config.from_object(config_class)
