@@ -1,0 +1,3 @@
+[submodule "cctb_quiz_app_frontend"]
+	path = cctb_quiz_app_frontend
+	url = https://github.com/FelipePulcherio/cctb_quiz_app_frontend.git
