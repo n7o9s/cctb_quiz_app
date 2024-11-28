@@ -23,37 +23,51 @@ def get_all_questions():
 
 # User APIs
 
-def validate_user_data(data):
-    # Example validation logic
-    if 'first_name' not in data or 'last_name' not in data:
-        return False, {"error": "First and last name are required"}
-    return True, None
-
 @main.route('/user', methods=['POST'])
 def add_user():
     data = request.json
-    is_valid, error = validate_user_data(data)
-    if not is_valid:
-        return jsonify(error), 400
+    
+    # Check if first_name, last_name, number, email and password are in the request
+    if not data or 'first_name' not in data or 'last_name' not in data or 'number' not in data or 'email' not in data or 'first_name' not in data or 'password' not in data:
+        return jsonify({"message": "First Name, Last Name, Number, Email and Paswword are required."}), 400
 
     new_user = {
-        "first_name": data.get("first_name"),
-        "last_name": data.get("last_name"),
-        "number": data.get("number"),
-        "email": data.get("email"),
-        "password": data.get("password")
+        "first_name": data["first_name"],
+        "last_name": data["last_name"],
+        "number": data["number"],
+        "email": data["email"],
+        "password": data["password"]
     }
-    result = mongo.db.User.insert_one(new_user)
-    new_user["_id"] = str(result.inserted_id)
-    return jsonify(new_user), 201
+
+    new_user = mongo.db.User.insert_one(new_user)
+    user = mongo.db.User.find_one({"email": data['email']})
+    user.pop("password", None)  # Remove password from the dictionary
+
+    return jsonify({"message": "Create account successful.", "data": object_id_to_str(user)}), 201
 
 @main.route('/login', methods=['POST'])
 def login_user():
     data = request.json
-    user = mongo.db.User.find_one({"email": data.get("email")})
+
+    # Check if email and password are in the request
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({"message": "Email and password are required"}), 400
+
+    reqEmail = data['email']
+    reqPassword = data['password']
+
+    # Fetch user from the database
+    user = mongo.db.User.find_one({"email": reqEmail})
     if user:
-        return jsonify(object_id_to_str(user)), 200
-    return jsonify({"message": "User not found"}), 404
+        # Check the password
+        if (user['password'] == reqPassword):
+            # Successful login
+            user.pop("password", None)  # Remove password from the dictionary
+            return jsonify({"message": "Login successful.", "data": object_id_to_str(user)}), 200
+        else:
+            return jsonify({"message": "Invalid credentials."}), 401
+    else:
+        return jsonify({"message": "Invalid credentials."}), 401
 
 @main.route('/user/<string:id>', methods=['GET'])
 def get_user(id):
